@@ -45,4 +45,4 @@ Satellite surface temperature (late morning), not air temperature; association, 
 
 ## Author
 
-Ekorshi Paul Choudhury, B.Tech Mathematics & Computing, Shri Mata Vaishno Devi University. Preliminary exploratory analysis, November 2026. Not peer reviewed.
+Ekorshi Paul Choudhury, B.Tech Mathematics & Computing, Shri Mata Vaishno Devi University. Preliminary exploratory analysis, November 2026. 
