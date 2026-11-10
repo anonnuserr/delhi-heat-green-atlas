@@ -1,0 +1,1010 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Delhi Heat–Green Atlas</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Satellite study of which kind of green cools Delhi, where greening is most needed, and where open land to plant sits nearby. By Ekorshi Paul Choudhury.">
+<meta name="author" content="Ekorshi Paul Choudhury">
+<meta property="og:title" content="Delhi Heat–Green Atlas">
+<meta property="og:description" content="Which kind of green cools Delhi, which neighbourhoods need it most, and where there is room to plant. Landsat 8/9, pre-monsoon 2023–2025.">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%232e7d4f'/%3E%3Ccircle cx='16' cy='13' r='7' fill='%23fbfcfb'/%3E%3Crect x='14.5' y='18' width='3' height='9' fill='%23fbfcfb'/%3E%3C/svg%3E">
+<style>body{margin:0}img{max-width:100%}[hidden]{display:none!important}:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}</style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;800&family=Public+Sans:ital,wght@0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: an atlas sheet. Sticky section index on top; each section keeps a
+   narrow margin column for its tag and a main column for the argument. */
+:root {
+  --paper: #f1f4f2;
+  --sheet: #fbfcfb;
+  --ink: #15211c;
+  --muted: #56645d;
+  --rule: #d3dbd6;
+  --leaf: #2e7d4f;
+  --leaf-soft: #e1eee6;
+  --c-trees: #2e7d4f;
+  --c-grass: #b0882a;
+  --c-built: #9a3fb5;
+  --ok: #2e7d4f; --part: #94650a; --none: #66756d;
+  --tip-bg: #15211c; --tip-fg: #f1f4f2;
+  --f-display: "Big Shoulders Display", "Arial Narrow", "Roboto Condensed", sans-serif;
+  --f-body: "Public Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #0e1412; --sheet: #141c19; --ink: #e3eae6; --muted: #95a59d;
+    --rule: #2a3631; --leaf: #5bb784; --leaf-soft: #1b2c24;
+    --c-trees: #34996b; --c-grass: #b4892a; --c-built: #c068d8;
+    --ok: #5bb784; --part: #d9a441; --none: #95a59d;
+    --tip-bg: #e3eae6; --tip-fg: #0e1412;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #0e1412; --sheet: #141c19; --ink: #e3eae6; --muted: #95a59d;
+  --rule: #2a3631; --leaf: #5bb784; --leaf-soft: #1b2c24;
+  --c-trees: #34996b; --c-grass: #b4892a; --c-built: #c068d8;
+  --ok: #5bb784; --part: #d9a441; --none: #95a59d;
+  --tip-bg: #e3eae6; --tip-fg: #0e1412;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 72px; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body {
+  background: var(--paper); color: var(--ink);
+  font-family: var(--f-body); font-size: 16px; line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--paper); }
+.wrap {
+  max-width: 1120px; margin: 0 auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+a { color: var(--leaf); text-underline-offset: 3px; }
+a:focus-visible, button:focus-visible, input:focus-visible { outline: 2px solid var(--leaf); outline-offset: 3px; border-radius: 2px; }
+h1, h2, h3 { text-wrap: balance; margin: 0; }
+p { margin: 0; }
+.mono { font-family: var(--f-mono); font-variant-numeric: tabular-nums; }
+.cite { font-family: var(--f-mono); font-size: 0.72em; vertical-align: super; line-height: 0; text-decoration: none; margin-left: 1px; }
+.small { font-size: 14px; color: var(--muted); }
+
+/* ---------- sticky index ---------- */
+.topbar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 9; background: var(--paper); border-bottom: 1px solid var(--rule); }
+.topbar .wrap { display: flex; align-items: center; gap: 12px 28px; padding-block: 10px; }
+.brand { font-family: var(--f-display); font-weight: 800; font-size: 19px; letter-spacing: 0.02em; text-transform: uppercase; white-space: nowrap; text-decoration: none; color: var(--ink); }
+.toc { display: flex; gap: 4px; overflow-x: auto; scrollbar-width: none; min-width: 0; flex: 1; justify-content: flex-end; }
+.toc::-webkit-scrollbar { display: none; }
+.toc a { font-size: 13px; color: var(--muted); text-decoration: none; padding: 5px 10px; border-radius: 999px; white-space: nowrap; }
+.toc a:hover { color: var(--ink); }
+.toc a.on { color: var(--ink); background: var(--leaf-soft); }
+
+/* ---------- hero ---------- */
+.hero .wrap { padding-block: 52px 36px; display: grid; gap: 24px; }
+.coords { font-family: var(--f-mono); font-size: 13px; color: var(--muted); letter-spacing: 0.04em; }
+.hero h1 {
+  font-family: var(--f-display); font-weight: 800; text-transform: uppercase;
+  font-size: clamp(44px, 8.5vw, 104px); line-height: 0.92; letter-spacing: 0.005em; max-width: 14ch;
+}
+.lede { font-size: 19px; max-width: 60ch; }
+.byline { font-size: 14px; color: var(--muted); }
+.byline strong { color: var(--ink); font-weight: 600; }
+.actions { display: flex; flex-wrap: wrap; gap: 10px; }
+.btn { display: inline-flex; align-items: center; gap: 8px; font: 600 15px/1 var(--f-body); text-decoration: none; padding: 12px 18px; border-radius: 4px; background: var(--leaf); color: var(--sheet); border: 1px solid var(--leaf); cursor: pointer; white-space: nowrap; }
+.btn.ghost { background: transparent; color: var(--ink); border-color: var(--rule); }
+.btn.ghost:hover { border-color: var(--ink); }
+
+/* segmented year control */
+.seg { display: inline-flex; border: 1px solid var(--rule); border-radius: 999px; padding: 3px; background: var(--sheet); gap: 2px; }
+.seg button { font: 600 13px/1 var(--f-mono); color: var(--muted); background: transparent; border: 0; padding: 7px 12px; border-radius: 999px; cursor: pointer; }
+.seg button[aria-pressed="true"] { background: var(--ink); color: var(--sheet); }
+.seg button:hover:not([aria-pressed="true"]) { color: var(--ink); }
+
+/* thermal ribbon */
+.ribbon { margin-top: 8px; }
+.ribbon-head { display: flex; justify-content: space-between; gap: 10px 16px; flex-wrap: wrap; align-items: center; font-size: 13px; color: var(--muted); }
+.ribbon-track { position: relative; height: 92px; margin-top: 64px; }
+.ribbon-bar { position: absolute; left: 0; right: 0; top: 40px; height: 22px; border-radius: 3px;
+  background: linear-gradient(90deg, #2c7bb6, #abd9e9 25%, #ffffbf 50%, #fdae61 75%, #d7191c); }
+.ticks { position: absolute; left: 0; right: 0; top: 66px; height: 26px; }
+.tick { position: absolute; transform: translateX(-50%); font-family: var(--f-mono); font-size: 12px; color: var(--muted); }
+.tick::before { content: ""; position: absolute; left: 50%; top: -4px; width: 1px; height: 4px; background: var(--muted); }
+.pin { position: absolute; top: 0; transform: translateX(-50%); display: grid; justify-items: center; gap: 2px; }
+.pin span { font-family: var(--f-mono); font-size: 12px; white-space: nowrap; color: var(--ink); background: var(--sheet); border: 1px solid var(--rule); padding: 1px 6px; border-radius: 3px; }
+.pin i { width: 2px; background: var(--ink); }
+@media (prefers-reduced-motion: no-preference) { .pin { transition: left 600ms ease, top 300ms ease; } .pin i { transition: height 300ms ease; } }
+
+/* ---------- sections ---------- */
+section.sec { border-top: 1px solid var(--rule); }
+section.sec > .wrap { display: grid; grid-template-columns: 190px minmax(0, 1fr); gap: 24px 48px; padding-block: 56px; }
+.tag { font-family: var(--f-mono); font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); padding-top: 8px; }
+.tag b { display: block; color: var(--leaf); font-weight: 600; margin-bottom: 4px; }
+.body { display: grid; gap: 24px; min-width: 0; }
+.body h2 { font-family: var(--f-display); font-weight: 800; text-transform: uppercase; font-size: clamp(30px, 4.6vw, 48px); line-height: 1; letter-spacing: 0.01em; }
+.body h3 { font-size: 17px; font-weight: 700; }
+.prose { max-width: 68ch; display: grid; gap: 14px; }
+
+/* abstract */
+.abstract { background: var(--sheet); border: 1px solid var(--rule); border-radius: 4px; padding: 22px; display: grid; gap: 10px; }
+.abstract .k { font-family: var(--f-mono); font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--leaf); }
+.abstract p { max-width: 75ch; }
+
+/* stat tiles */
+.tiles-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px; }
+.tiles { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border: 1px solid var(--rule); border-radius: 4px; background: var(--sheet); }
+.tile { padding: 18px; display: grid; gap: 6px; align-content: start; border-right: 1px solid var(--rule); }
+.tile:last-child { border-right: 0; }
+.tile .v { font-family: var(--f-display); font-weight: 800; font-size: 46px; line-height: 1; font-variant-numeric: tabular-nums; }
+.tile .l { font-size: 13px; color: var(--muted); line-height: 1.4; }
+
+/* questions */
+.qs { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.q { background: var(--sheet); border: 1px solid var(--rule); border-radius: 4px; padding: 18px; display: grid; gap: 8px; align-content: start; }
+.q .k, .blk-k { font-family: var(--f-mono); font-size: 12px; color: var(--leaf); letter-spacing: 0.06em; }
+.q p { font-size: 15px; color: var(--muted); }
+
+/* prior work */
+.lit { display: grid; border-top: 1px solid var(--rule); }
+.lit-row { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr); gap: 6px 24px; padding: 14px 0; border-bottom: 1px solid var(--rule); }
+.lit-row .src { font-size: 14px; font-weight: 600; }
+.lit-row .src span { display: block; font-weight: 400; color: var(--muted); font-size: 13px; }
+.lit-row p { font-size: 15px; color: var(--muted); }
+.adds { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+.add { background: var(--leaf-soft); border-radius: 4px; padding: 18px; display: grid; gap: 6px; align-content: start; }
+.add h3 { font-size: 16px; }
+.add p { font-size: 14px; }
+
+/* method */
+.steps { list-style: none; margin: 0; padding: 0; display: grid; counter-reset: s; }
+.steps li { counter-increment: s; display: grid; grid-template-columns: 44px minmax(0, 1fr); gap: 14px; padding: 14px 0; border-bottom: 1px dashed var(--rule); }
+.steps li:last-child { border-bottom: 0; }
+.steps li::before { content: counter(s, decimal-leading-zero); font-family: var(--f-mono); font-size: 13px; color: var(--leaf); padding-top: 2px; }
+.steps strong { display: block; }
+.steps span { font-size: 15px; color: var(--muted); }
+.eqs { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+.eq { border: 1px solid var(--rule); border-radius: 4px; padding: 16px; background: var(--sheet); display: grid; gap: 8px; align-content: start; min-width: 0; }
+.eq .k { font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+.eq code { font-family: var(--f-mono); font-size: 13.5px; line-height: 1.55; color: var(--ink); overflow-wrap: anywhere; }
+.eq p { font-size: 13px; color: var(--muted); }
+
+/* tables */
+.tbl-wrap { overflow-x: auto; border: 1px solid var(--rule); border-radius: 4px; background: var(--sheet); }
+table { border-collapse: collapse; width: 100%; font-size: 14px; }
+th, td { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--rule); vertical-align: top; }
+tr:last-child td { border-bottom: 0; }
+th { font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); font-weight: 600; white-space: nowrap; }
+td.num, th.num { text-align: right; font-family: var(--f-mono); font-variant-numeric: tabular-nums; white-space: nowrap; }
+tr.sel td { background: var(--leaf-soft); }
+
+/* result blocks */
+.blk { display: grid; gap: 16px; padding-top: 28px; border-top: 2px solid var(--ink); }
+.blk-head { display: grid; gap: 6px; }
+.blk-head h3 { font-size: 22px; line-height: 1.25; }
+.blk-head p { max-width: 70ch; color: var(--muted); font-size: 15px; }
+.card { position: relative; background: var(--sheet); border: 1px solid var(--rule); border-radius: 4px; padding: 18px; display: grid; gap: 12px; min-width: 0; }
+.card-head { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px 20px; align-items: center; }
+.card-head h4 { margin: 0; font-size: 15px; }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 13px; }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.legend svg { flex: none; }
+.chart-box { position: relative; overflow-x: auto; }
+.chart-box svg { display: block; width: 100%; min-width: 520px; height: auto; }
+.tip { position: absolute; pointer-events: none; background: var(--tip-bg); color: var(--tip-fg); font: 12px/1.4 var(--f-mono); padding: 6px 9px; border-radius: 4px; white-space: nowrap; transform: translate(-50%, calc(-100% - 10px)); z-index: 2; }
+.two { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+
+/* atlas viewer */
+.viewer { display: grid; gap: 12px; }
+.tabs { display: flex; flex-wrap: wrap; gap: 6px; }
+.tabs button { font: 600 13px/1 var(--f-body); color: var(--muted); background: var(--sheet); border: 1px solid var(--rule); padding: 9px 13px; border-radius: 4px; cursor: pointer; }
+.tabs button[aria-selected="true"] { color: var(--sheet); background: var(--ink); border-color: var(--ink); }
+.frame { aspect-ratio: 2 / 1; max-width: 100%; border: 1px solid var(--rule); border-radius: 4px; background: var(--sheet); overflow: hidden; display: grid; place-items: center; }
+.frame img { width: 100%; height: 100%; object-fit: contain; display: block; }
+.viewer-foot { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px 24px; align-items: center; }
+.viewer-foot p { font-size: 13px; color: var(--muted); max-width: 70ch; }
+.maplegend { display: grid; gap: 4px; min-width: 200px; font-size: 12px; color: var(--muted); font-family: var(--f-mono); }
+.maplegend .g { height: 10px; border-radius: 2px; }
+.maplegend .lr { display: flex; justify-content: space-between; gap: 12px; }
+.sw { display: inline-block; width: 12px; height: 12px; border-radius: 2px; vertical-align: -1px; margin-right: 6px; }
+
+/* explorer */
+.explorer { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 20px; align-items: center; }
+.explorer label { font-size: 14px; font-weight: 600; display: block; margin-bottom: 8px; }
+.explorer input[type="range"] { width: 100%; accent-color: var(--leaf); }
+.scale-lbl { display: flex; justify-content: space-between; font: 12px var(--f-mono); color: var(--muted); }
+.out .v { font-family: var(--f-display); font-weight: 800; font-size: 44px; line-height: 1; }
+.out p { font-size: 13px; color: var(--muted); margin-top: 6px; }
+
+/* bar rows (clusters, funnel) */
+.bars { display: grid; gap: 6px; }
+.bar-row { display: grid; grid-template-columns: 230px minmax(0, 1fr); gap: 4px 14px; align-items: center; padding: 3px 4px; border-radius: 3px; }
+.bar-row:hover { background: var(--leaf-soft); }
+.bar-name { font-size: 13.5px; line-height: 1.3; }
+.bar-name a { color: var(--ink); text-decoration: none; }
+.bar-name a:hover { text-decoration: underline; }
+.bar-track { display: flex; align-items: center; gap: 8px; min-width: 0; }
+.bar-fill { height: 14px; background: var(--leaf); border-radius: 0 4px 4px 0; min-width: 2px; }
+@media (prefers-reduced-motion: no-preference) { .bar-fill { transition: width 500ms ease; } }
+.bar-val { font: 12.5px var(--f-mono); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.funnel .bar-fill { height: 22px; }
+.funnel .bar-row:nth-child(2) .bar-fill { opacity: 0.75; }
+.funnel .bar-row:nth-child(3) .bar-fill { opacity: 0.55; }
+
+/* criteria */
+.chip { display: inline-flex; align-items: center; gap: 6px; font: 600 11px/1 var(--f-mono); letter-spacing: 0.04em; text-transform: uppercase; padding: 5px 8px; border-radius: 999px; border: 1px solid currentColor; white-space: nowrap; }
+.chip::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
+.chip.ok { color: var(--ok); } .chip.part { color: var(--part); } .chip.none { color: var(--none); }
+.chip.none::before { background: transparent; border: 1.5px solid currentColor; width: 7px; height: 7px; }
+.chip.part::before { background: linear-gradient(90deg, currentColor 50%, transparent 50%); border: 1.5px solid currentColor; width: 7px; height: 7px; }
+
+/* lists */
+.cols2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px 32px; }
+.item { display: grid; gap: 4px; padding-top: 12px; border-top: 2px solid var(--ink); }
+.item p { font-size: 15px; color: var(--muted); }
+ul.plain { margin: 0; padding-left: 18px; display: grid; gap: 10px; max-width: 70ch; }
+
+/* map cta */
+.mapcta { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 16px 24px; align-items: center; background: var(--sheet); border: 1px solid var(--rule); border-radius: 4px; padding: 22px; }
+
+/* references */
+ol.refs { margin: 0; padding: 0; list-style: none; display: grid; gap: 10px; counter-reset: r; }
+ol.refs li { display: grid; grid-template-columns: 40px minmax(0, 1fr); gap: 8px; font-size: 14px; color: var(--muted); }
+ol.refs li::before { counter-increment: r; content: "[" counter(r) "]"; font-family: var(--f-mono); color: var(--ink); font-size: 13px; }
+ol.refs li:target { background: var(--leaf-soft); border-radius: 3px; }
+ol.refs a { overflow-wrap: anywhere; }
+.citebox { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 12px; align-items: start; background: var(--sheet); border: 1px solid var(--rule); border-radius: 4px; padding: 16px; }
+.citebox p { font-size: 14px; overflow-wrap: anywhere; }
+
+footer { border-top: 1px solid var(--rule); }
+footer .wrap { padding-block: 28px 48px; font-size: 13px; color: var(--muted); display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; }
+
+@media (max-width: 900px) {
+  section.sec > .wrap { grid-template-columns: minmax(0, 1fr); gap: 12px; padding-block: 40px; }
+  .tag { padding-top: 0; }
+  .tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .tile:nth-child(2) { border-right: 0; }
+  .tile:nth-child(-n+2) { border-bottom: 1px solid var(--rule); }
+  .adds, .eqs { grid-template-columns: minmax(0, 1fr); }
+  .lit-row { grid-template-columns: minmax(0, 1fr); }
+  .brand { font-size: 16px; }
+}
+@media (max-width: 640px) {
+  .qs, .two, .cols2, .explorer { grid-template-columns: minmax(0, 1fr); }
+  .mapcta, .citebox { grid-template-columns: minmax(0, 1fr); }
+  .bar-row { grid-template-columns: minmax(0, 1fr); }
+  .hero .wrap { padding-block: 32px 28px; }
+  .lede { font-size: 17px; }
+  .tile .v { font-size: 36px; }
+  .topbar .wrap { flex-direction: column; align-items: stretch; gap: 6px; }
+  .toc { justify-content: flex-start; }
+  .frame { aspect-ratio: 3 / 2; }
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="wrap">
+    <a class="brand" href="#top">Delhi Heat–Green Atlas</a>
+    <nav class="toc" id="toc" aria-label="Sections">
+      <a href="#summary">Summary</a>
+      <a href="#context">Context</a>
+      <a href="#method">Method</a>
+      <a href="#results">Results</a>
+      <a href="#nbs">NbS</a>
+      <a href="#limits">Limits</a>
+      <a href="#references">References</a>
+    </nav>
+  </div>
+</div>
+
+<header class="hero" id="top">
+  <div class="wrap">
+    <div class="coords">28.61° N · 77.21° E &nbsp;/&nbsp; NCT of Delhi &nbsp;/&nbsp; Landsat 8–9 · pre-monsoon 2023–2025</div>
+    <h1>Where would trees cool Delhi the most?</h1>
+    <p class="lede">A satellite study of which kind of green actually cools Delhi, which dense neighbourhoods need it most, and where open land to plant canopy already sits next to them.</p>
+    <p class="byline"><strong>Ekorshi Paul Choudhury</strong> · B.Tech Mathematics &amp; Computing, Shri Mata Vaishno Devi University · November 2026</p>
+    <div class="actions">
+      <a class="btn" id="hero-map" href="#" target="_blank" rel="noopener">Open the live map ↗</a>
+      <a class="btn ghost" href="#results">Read the findings ↓</a>
+    </div>
+
+    <div class="ribbon" aria-label="Mean land surface temperature by land cover on the 35 to 50 degree scale used in the maps">
+      <div class="ribbon-head">
+        <span>Mean pre-monsoon surface temperature by land cover, city-wide (°C)</span>
+        <div class="seg yearctl" role="group" aria-label="Season"></div>
+      </div>
+      <div class="ribbon-track" id="ribbon-track">
+        <div class="ribbon-bar"></div>
+        <div class="ticks" id="ticks"></div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section class="sec" id="summary">
+  <div class="wrap">
+    <div class="tag"><b>Summary</b>At a glance</div>
+    <div class="body">
+      <div class="abstract">
+        <span class="k">Abstract</span>
+        <p>Using Landsat 8/9 imagery from three pre-monsoon seasons (2023–2025), this study compares land surface temperature across tree cover, grassland and built-up land in Delhi. Greenness and surface temperature were negatively correlated in every season (r = −0.52 to −0.61). Within the same 1 km neighbourhoods, tree cover was the coolest land type in 77–89 % of 764 squares, while open grassland was a median 1.3–1.6 °C hotter than trees and slightly hotter than built-up land. A greening-priority index combining heat, lack of vegetation and population points to dense settlements in west, north-west, north-east and south Delhi and the old city. Of about 3,750 ha of open grassland hotter than the average built-up surface, about 710 ha lies within 500 m of a priority hotspot. For cooling, nature-based solutions in Delhi should favour tree canopy over open green space, and the land to plant it is scarcest where the need is greatest.</p>
+      </div>
+      <div class="tiles-head">
+        <h3>Key results</h3>
+        <div class="seg yearctl" role="group" aria-label="Season"></div>
+      </div>
+      <div class="tiles" id="tiles"></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="context">
+  <div class="wrap">
+    <div class="tag"><b>Context</b>Why it matters</div>
+    <div class="body">
+      <h2>Green cover as a nature-based solution for heat</h2>
+      <div class="prose">
+        <p>Delhi's pre-monsoon heat is a growing public-health problem. A 2026 assessment by the Centre for Science and Environment found that over 70 % of the city's area is persistently heat-stressed.<a class="cite" href="#ref-4">[4]</a> Dense built-up areas absorb and re-radiate more heat than vegetated land, and heat exposure falls hardest on people with the fewest ways to escape it.<a class="cite" href="#ref-5">[5]</a></p>
+        <p>Trees cool their surroundings through shade and through evapotranspiration, the water their leaves release. Using ecosystems deliberately to meet a societal challenge like this, while also benefiting people and biodiversity, is what the UN Environment Assembly defined in 2022 as a nature-based solution (NbS).<a class="cite" href="#ref-1">[1]</a><a class="cite" href="#ref-2">[2]</a> The IUCN Global Standard sets out eight criteria for designing and verifying such interventions.<a class="cite" href="#ref-3">[3]</a></p>
+        <p>Not all green cools equally. Across 58 studies worldwide, trees lowered local air temperature two to three times more than grass, green roofs or green walls.<a class="cite" href="#ref-9">[9]</a> A satellite study of European cities found treeless green space two to four times less effective than trees at lowering surface temperature, and in dry southern regions often warmer than the built-up fabric itself.<a class="cite" href="#ref-7">[7]</a> Whether that holds in Delhi's semi-arid climate, at the scale of individual neighbourhoods, is the gap this study addresses.</p>
+      </div>
+
+      <h3>Prior work on Delhi and what this study adds</h3>
+      <div class="lit">
+        <div class="lit-row"><div class="src"><a href="#ref-4">Making Delhi Heat-Resilient</a><span>Centre for Science and Environment, May 2026</span></div><p>Landsat surface temperature over a decade, overlaid with vulnerable groups at ward level. Maps where heat stress persists.</p></div>
+        <div class="lit-row"><div class="src"><a href="#ref-5">Mapping Heat Inequality Across Neighbourhoods in Delhi</a><span>Artha Global with data.org, 2026</span></div><p>Links higher tree cover to lower experienced heat on a 1 km grid, and household surveys to lost sleep, illness and missed work.</p></div>
+        <div class="lit-row"><div class="src"><a href="#ref-6">Spatio-temporal variations of urban heat island over Delhi</a><span>Pandey et al., Urban Climate, 2014</span></div><p>By day in May–June, Delhi as a whole is cooler at the surface than its drier surroundings, while staying warmer at night.</p></div>
+      </div>
+      <div class="adds">
+        <div class="add"><h3>Type of green, tested locally</h3><p>Compares tree canopy and open grassland inside the same 1 km squares over three seasons, so city-wide gradients cannot explain the result.</p></div>
+        <div class="add"><h3>From hotspots to room to plant</h3><p>Goes beyond mapping where it is hot, to finding open land that already exists next to the highest-priority settlements.</p></div>
+        <div class="add"><h3>Open and repeatable</h3><p>Open data, one public script and a live map, so the analysis can be rerun every summer to check whether greening worked.</p></div>
+      </div>
+
+      <h3>Research questions</h3>
+      <div class="qs">
+        <div class="q"><span class="k">Q1 · Relationship</span><h3>How strongly does greenness track surface heat?</h3><p>Correlation and slope between NDVI and land surface temperature across thousands of 30 m pixels.</p></div>
+        <div class="q"><span class="k">Q2 · Type of green</span><h3>Do trees and open grass cool equally?</h3><p>Surface temperature of tree cover, grassland and built-up land, city-wide and within the same neighbourhoods.</p></div>
+        <div class="q"><span class="k">Q3 · Where to act</span><h3>Which built-up areas need greening first?</h3><p>A priority score combining heat, lack of vegetation and population, mapped across Delhi.</p></div>
+        <div class="q"><span class="k">Q4 · Room to plant</span><h3>Is there open land near those areas?</h3><p>Hot open grassland within 500 m of the highest-priority settlements.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="method">
+  <div class="wrap">
+    <div class="tag"><b>Method</b>How it was done</div>
+    <div class="body">
+      <h2>From satellite scenes to a priority map</h2>
+      <ol class="steps">
+        <li><div><strong>Collect clear Landsat scenes</strong><span>Landsat 8 and 9 Collection 2 Level 2 images over Delhi, 15 April – 15 June of 2023, 2024 and 2025, keeping scenes under 20 % cloud (10, 16 and 13 scenes).<a class="cite" href="#ref-11">[11]</a></span></div></li>
+        <li><div><strong>Remove bad pixels</strong><span>Mask fill, cloud, cirrus, cloud shadow and physically implausible temperatures (outside 10–75 °C) using the QA band.</span></div></li>
+        <li><div><strong>Compute greenness and heat</strong><span>NDVI from the red and near-infrared bands, and land surface temperature from thermal band 10; take each pixel's median across the season.<a class="cite" href="#ref-15">[15]</a></span></div></li>
+        <li><div><strong>Keep comparable land</strong><span>Keep only tree cover, grassland and built-up land from ESA WorldCover, so ploughed fields, bare soil and water do not distort the comparison.<a class="cite" href="#ref-12">[12]</a></span></div></li>
+        <li><div><strong>Measure the relationship</strong><span>Sample random pixels each season (about 2,500 valid); compute Pearson correlation, a linear fit, and mean temperature for each land-cover type.</span></div></li>
+        <li><div><strong>Test within neighbourhoods</strong><span>Split Delhi into 1 km squares. Where a square holds at least 1.8 ha each of trees, grassland and built-up land (764 squares), compare the three inside that square, then take medians across squares.</span></div></li>
+        <li><div><strong>Score greening priority</strong><span>On built-up land only, rescale heat, lack of vegetation and population to 0–1 within Delhi and average them; map the top 10 % as hotspots and outline the largest clusters.<a class="cite" href="#ref-13">[13]</a></span></div></li>
+        <li><div><strong>Find room to plant</strong><span>Mark open grassland hotter than the average built-up surface that lies within 500 m of a priority hotspot, and total it around each of the largest clusters.</span></div></li>
+      </ol>
+
+      <div class="eqs">
+        <div class="eq"><span class="k">Vegetation index</span><code>NDVI = (NIR − Red) / (NIR + Red)</code><p>Landsat bands 5 and 4, after Collection 2 reflectance scaling.</p></div>
+        <div class="eq"><span class="k">Surface temperature</span><code>LST (°C) = ST_B10 × 0.00341802 + 149.0 − 273.15</code><p>USGS Collection 2 surface-temperature scale factors.<a class="cite" href="#ref-11">[11]</a></p></div>
+        <div class="eq"><span class="k">Greening priority</span><code>P = ⅓ (heat′ + (1 − NDVI′) + population′)</code><p>′ = rescaled to 0–1 between the 5th and 95th percentile within Delhi, with values beyond that range capped.</p></div>
+      </div>
+
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Dataset</th><th class="num">Resolution</th><th>Used for</th></tr></thead>
+          <tbody>
+            <tr><td>Landsat 8 &amp; 9, Collection 2 Level 2 (USGS)<a class="cite" href="#ref-11">[11]</a></td><td class="num">30 m</td><td>NDVI and land surface temperature</td></tr>
+            <tr><td>ESA WorldCover 2021, v200<a class="cite" href="#ref-12">[12]</a></td><td class="num">10 m</td><td>Tree cover, grassland and built-up masks</td></tr>
+            <tr><td>GHSL population grid, R2023A, 2025 epoch (JRC)<a class="cite" href="#ref-13">[13]</a></td><td class="num">100 m</td><td>Population term in the priority score</td></tr>
+            <tr><td>FAO GAUL level-1 boundaries<a class="cite" href="#ref-14">[14]</a></td><td class="num">vector</td><td>NCT of Delhi study area</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="small">All processing runs in Google Earth Engine.<a class="cite" href="#ref-16">[16]</a></p>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="results">
+  <div class="wrap">
+    <div class="tag"><b>Results</b>What the data shows</div>
+    <div class="body">
+      <h2>Findings</h2>
+
+      <!-- Atlas viewer -->
+      <div class="viewer card">
+        <div class="tabs" role="tablist" aria-label="Map layers" id="tabs"></div>
+        <div class="frame"><img id="fig-img" alt=""></div>
+        <div class="viewer-foot">
+          <p id="fig-cap"></p>
+          <div class="maplegend" id="fig-legend"></div>
+        </div>
+      </div>
+
+      <!-- Q1 -->
+      <div class="blk">
+        <div class="blk-head">
+          <span class="blk-k">Q1 · Relationship</span>
+          <h3>Greener ground was consistently cooler</h3>
+          <p>In every season, greenness and surface temperature were moderately to strongly negatively correlated (r between −0.52 and −0.61). Each +0.1 rise in NDVI went with a surface roughly 0.9 to 1.1 °C cooler.</p>
+        </div>
+          <div class="card explorer">
+            <div>
+              <label for="dndvi">Explore: a rise in NDVI of <span class="mono" id="dndvi-v">0.10</span></label>
+              <input type="range" id="dndvi" min="0.05" max="0.30" step="0.05" value="0.10">
+              <div class="scale-lbl"><span>+0.05</span><span>+0.30</span></div>
+            </div>
+            <div class="out">
+              <div class="v" id="dndvi-out">0.9–1.1 °C</div>
+              <p>cooler surface associated with that difference in the 2023–2025 data. An association across the city, not a forecast for any one site.</p>
+            </div>
+          </div>
+          <div class="tbl-wrap">
+            <table id="q1-table">
+              <thead><tr><th>Season</th><th class="num">Scenes</th><th class="num">Pixels</th><th class="num">r</th><th class="num">°C per +0.1 NDVI</th></tr></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+      </div>
+
+      <!-- Q2 -->
+      <div class="blk">
+        <div class="blk-head">
+          <span class="blk-k">Q2 · Type of green</span>
+          <h3>Canopy cools. Open grass does not.</h3>
+          <p>City-wide, tree cover was the coolest land in all three seasons and grassland the hottest. Inside the same 1 km squares the gap shrinks but holds: trees were coolest in 77–89 % of squares, and grassland ran a median 1.3–1.6 °C hotter than trees. The local tree–built gap is about half the city-wide one, so part of the city-wide difference reflects where trees grow; the local figure is the conservative estimate.</p>
+        </div>
+        <div class="card">
+          <div class="card-head">
+            <h4>City-wide mean surface temperature by land cover</h4>
+            <div class="legend" id="legend"></div>
+          </div>
+          <div class="chart-box" id="dot-chart"></div>
+        </div>
+        <div class="card">
+          <div class="card-head">
+            <h4>Same-neighbourhood test: median difference inside 764 squares (°C)</h4>
+            <div class="legend"><span><svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><circle cx="6" cy="6" r="5" fill="var(--leaf)"/></svg>Selected season</span><span><svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><circle cx="6" cy="6" r="4" fill="var(--sheet)" stroke="var(--muted)" stroke-width="1.5"/></svg>Other seasons</span></div>
+          </div>
+          <div class="chart-box" id="pair-chart"></div>
+          <p class="small">Positive values mean the first land type was hotter. Hover a marker for its value; change the season with the selector at the top of the page.</p>
+        </div>
+      </div>
+
+      <!-- Q3 -->
+      <div class="blk">
+        <div class="blk-head">
+          <span class="blk-k">Q3 · Where to act</span>
+          <h3>Priority concentrates in dense settlements</h3>
+          <p>The top 10 % of built-up land (priority score 0.80 or higher) forms clusters mainly in west, north-west, north-east and south Delhi and the old city. The largest single cluster covers about 970 ha around Uttam Nagar – Bindapur.</p>
+        </div>
+        <div class="card">
+          <div class="card-head">
+            <h4 id="clu-title">Ten largest priority clusters</h4>
+            <div class="seg" role="group" aria-label="Measure" id="clu-ctl">
+              <button type="button" data-m="ha" aria-pressed="true">Cluster size</button>
+              <button type="button" data-m="opp" aria-pressed="false">Open land nearby</button>
+              <button type="button" data-m="per" aria-pressed="false">Per 100 ha</button>
+            </div>
+          </div>
+          <div class="bars" id="clu-bars"></div>
+          <p class="small" id="clu-note"></p>
+        </div>
+      </div>
+
+      <!-- Q4 -->
+      <div class="blk">
+        <div class="blk-head">
+          <span class="blk-k">Q4 · Room to plant</span>
+          <h3>Most hot open land lies away from the people who need shade</h3>
+          <p>Delhi has about 3,750 ha of open grassland hotter than the average built-up surface (41.6 °C in 2025). Only about one-fifth of it lies within 500 m of any priority hotspot, and about 87 ha lies next to the ten largest clusters, which together cover about 2,790 ha of dense settlement. The most room is near Uttam Nagar – Bindapur, Bhalswa, Mustafabad – Gokulpuri and Jahangirpuri. Converting these patches to shaded canopy is a concrete first step; elsewhere, street trees and shade inside the settlements will have to do most of the work.</p>
+        </div>
+        <div class="card funnel">
+          <h4 style="margin:0;font-size:15px">Hot open grassland, 2025 (hectares)</h4>
+          <div class="bars" id="funnel"></div>
+        </div>
+      </div>
+
+      <!-- robustness + comparison -->
+      <div class="blk">
+        <div class="blk-head">
+          <span class="blk-k">Robustness and comparison</span>
+          <h3>Consistent across seasons, and in line with dry-climate studies</h3>
+        </div>
+        <div class="prose">
+          <p>2024 was the hottest of the three seasons in this data (built-up land averaged 46.2 °C), yet the order stayed the same every year: trees coolest, grassland hottest, built-up land in between. The correlation and slope also stayed within a narrow band.</p>
+          <p>The size of the tree effect fits what is known about dry climates. During hot extremes, a satellite study of European cities found tree areas 8–12 K cooler than the urban fabric in central Europe but only 0–4 K cooler in the drier south, where treeless green space was often warmer than built-up land, as it was here.<a class="cite" href="#ref-7">[7]</a> A 2025 review covering 110 cities likewise found that tree cooling depends strongly on background climate and urban form.<a class="cite" href="#ref-10">[10]</a> Delhi's 0.9–1.2 °C local tree–built gap falls within the range reported for dry southern Europe. Dry pre-monsoon conditions also explain why open land heats up so much: by day, Delhi's surface is cooler than its drier rural surroundings.<a class="cite" href="#ref-6">[6]</a></p>
+        </div>
+        <div class="tbl-wrap">
+          <table id="all-table">
+            <thead>
+              <tr><th></th><th class="num" colspan="3">City-wide mean (°C)</th><th class="num" colspan="4">Same 1 km square, median (°C)</th></tr>
+              <tr><th>Season</th><th class="num">Trees</th><th class="num">Grass</th><th class="num">Built-up</th>
+              <th class="num">Grass−trees</th><th class="num">Built−trees</th><th class="num">Grass−built</th><th class="num">Trees coolest</th></tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="mapcta">
+        <div class="prose">
+          <h3>Explore the live map</h3>
+          <p class="small">Switch between surface temperature, vegetation and greening priority, and click any point in Delhi to read its land cover, temperature and priority score. Runs on Google Earth Engine; the source code is visible from the app.</p>
+        </div>
+        <a class="btn" id="app-link" href="#" target="_blank" rel="noopener">Open the map ↗</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="nbs">
+  <div class="wrap">
+    <div class="tag"><b>Implications</b>For nature-based solutions</div>
+    <div class="body">
+      <h2>What greening would have to get right</h2>
+      <div class="cols2">
+        <div class="item"><h3>Type of green</h3><p>Open grassland ran hotter than concrete in the dry season while tree cover was coolest. Cooling needs canopy and shade; a study in Madison, USA, found the largest gains once canopy passed about 40 % at roughly city-block scale.<a class="cite" href="#ref-8">[8]</a></p></div>
+        <div class="item"><h3>Water</h3><p>Evaporative cooling needs water, and tree cooling weakens where soils are dry.<a class="cite" href="#ref-7">[7]</a> In a water-stressed city, drought-tolerant native species and rainwater use matter as much as planting numbers.</p></div>
+        <div class="item"><h3>Space</h3><p>The hottest, densest areas have the least free land. Converting nearby hot open grassland to canopy avoids competing for built space; inside settlements, street trees and school grounds remain the realistic options.</p></div>
+        <div class="item"><h3>Fairness</h3><p>Putting population in the priority score asks who is exposed, not only where it is hot, so greening reaches people with the fewest alternatives to shade.</p></div>
+        <div class="item"><h3>Upkeep</h3><p>Saplings that die in the first summer cool nothing. Survival, maintenance budgets and local stewardship decide the real outcome.</p></div>
+        <div class="item"><h3>Evidence loop</h3><p>The same satellite method can check, season after season, whether greened areas actually got cooler.</p></div>
+      </div>
+
+      <h3>Read against the IUCN Global Standard for NbS</h3>
+      <p class="small" style="max-width:70ch">Which of the Standard's eight criteria<a class="cite" href="#ref-3">[3]</a> this evidence informs, and which a real intervention would still need to address.</p>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Criterion</th><th>This study</th><th>What it contributes or leaves open</th></tr></thead>
+          <tbody id="iucn"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="limits">
+  <div class="wrap">
+    <div class="tag"><b>Limits</b>Read the results with these in mind</div>
+    <div class="body">
+      <ul class="plain">
+        <li><strong>Surface, not air, temperature.</strong> Landsat measures how hot the ground and roofs are in the late morning (about 10:30 am IST). Air temperature and night-time heat, which affect health most, can differ.</li>
+        <li><strong>Association, not proof of cause.</strong> Green areas differ from built-up areas in other ways too, such as building height, materials and nearby water. The same-neighbourhood test reduces but does not remove this.</li>
+        <li><strong>Pixels are not independent.</strong> Neighbouring pixels resemble each other, so p-values from thousands of samples overstate certainty. The study reports effect sizes and checks consistency across three seasons instead.</li>
+        <li><strong>The priority score involves choices.</strong> Heat, greenness and population are weighted equally. Other weights would shift the hotspots.</li>
+        <li><strong>“Grassland” is a broad class.</strong> In ESA WorldCover it covers any land dominated by grasses or herbs, which in Delhi includes dry open grounds, scrub and floodplain grass as well as parks. Irrigated lawns may behave differently.</li>
+        <li><strong>Not all open land is plantable.</strong> Some hot grassland near hotspots may be floodplain, protected or otherwise unsuitable for trees; sites need checking on the ground. Totals around the ten clusters can also double-count land where two clusters lie within 1 km of each other.</li>
+        <li><strong>Data dates differ.</strong> Land cover is from 2021 and population is a modelled 2025 estimate. Neighbourhood names mark each cluster's centre and were checked on Google Maps, but a large cluster can extend into neighbouring localities.</li>
+      </ul>
+      <h3>Next steps</h3>
+      <ul class="plain">
+        <li>Add night-time temperature (MODIS) to capture heat that stays after sunset.</li>
+        <li>Measure how far the cooling of large parks such as the Ridge reaches into surrounding streets.</li>
+        <li>Add vulnerability layers (age, housing type, access to cooling) to the priority score.</li>
+        <li>Screen candidate planting sites for ownership, flood risk and soil, then track planted sites over time.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="references">
+  <div class="wrap">
+    <div class="tag"><b>Sources</b>References and reuse</div>
+    <div class="body">
+      <h2>References</h2>
+      <ol class="refs">
+        <li id="ref-1">UN Environment Assembly (2022). Resolution 5/5: Nature-based solutions for supporting sustainable development. UNEP/EA.5/Res.5. <a href="https://wedocs.unep.org/bitstream/handle/20.500.11822/39752/K2200677%20-%20UNEP-EA.5-Res.5%20-%20Advance.pdf" target="_blank" rel="noopener">wedocs.unep.org</a></li>
+        <li id="ref-2">Cohen-Shacham, E., Walters, G., Janzen, C. &amp; Maginnis, S. (eds.) (2016). Nature-based Solutions to address global societal challenges. IUCN, Gland. <a href="https://iucn.org/resources/publication/nature-based-solutions-address-global-societal-challenges" target="_blank" rel="noopener">iucn.org</a></li>
+        <li id="ref-3">IUCN (2020). IUCN Global Standard for Nature-based Solutions. First edition. IUCN, Gland. <a href="https://inbs.iucn.org/" target="_blank" rel="noopener">inbs.iucn.org</a></li>
+        <li id="ref-4">Centre for Science and Environment (2026). Making Delhi Heat-Resilient: A roadmap with the focus on vulnerable groups. 18 May 2026. <a href="https://www.cseindia.org/making-delhi-heat-resilient-13109" target="_blank" rel="noopener">cseindia.org</a></li>
+        <li id="ref-5">Artha Global Center for Rapid Insights &amp; data.org (2026). Mapping Heat Inequality Across Neighbourhoods in Delhi: Integrating geospatial and citizen data for climate resilience. White paper. <a href="https://data.org/reports/mapping-heat-inequality-across-neighbourhoods-in-delhi/" target="_blank" rel="noopener">data.org</a></li>
+        <li id="ref-6">Pandey, A.K., Singh, S., Berwal, S., Kumar, D., Pandey, P., Prakash, A., Lodhi, N., Maithani, S., Jain, V.K. &amp; Kumar, K. (2014). Spatio-temporal variations of urban heat island over Delhi. Urban Climate 10(1), 119–133. <a href="https://eprints.lancs.ac.uk/id/eprint/173041" target="_blank" rel="noopener">eprints.lancs.ac.uk</a></li>
+        <li id="ref-7">Schwaab, J., Meier, R., Mussetti, G., Seneviratne, S., Bürgi, C. &amp; Davin, E.L. (2021). The role of urban trees in reducing land surface temperatures in European cities. Nature Communications 12, 6763. <a href="https://doi.org/10.1038/s41467-021-26768-w" target="_blank" rel="noopener">doi:10.1038/s41467-021-26768-w</a></li>
+        <li id="ref-8">Ziter, C.D., Pedersen, E.J., Kucharik, C.J. &amp; Turner, M.G. (2019). Scale-dependent interactions between tree canopy cover and impervious surfaces reduce daytime urban heat during summer. PNAS 116(15), 7575–7580. <a href="https://doi.org/10.1073/pnas.1817561116" target="_blank" rel="noopener">doi:10.1073/pnas.1817561116</a></li>
+        <li id="ref-9">Kim, J., Khouakhi, A., Corstanje, R. &amp; Johnston, A.S.A. (2024). Greater local cooling effects of trees across globally distributed urban green spaces. Science of the Total Environment 911, 168494. <a href="https://doi.org/10.1016/j.scitotenv.2023.168494" target="_blank" rel="noopener">doi:10.1016/j.scitotenv.2023.168494</a></li>
+        <li id="ref-10">Li, H., Zhao, Y., Wang, C., Ürge-Vorsatz, D., Carmeliet, J. &amp; Bardhan, R. (2025). Cooling efficacy of trees across cities is determined by background climate, urban morphology, and tree trait. Communications Earth &amp; Environment. <a href="https://heathealth.info/resources/cooling-efficacy-of-trees-across-cities-is-determined-by-background-climate-urban-morphology-and-tree-trait/" target="_blank" rel="noopener">heathealth.info summary</a></li>
+        <li id="ref-11">U.S. Geological Survey. Landsat Collection 2 Level-2 Science Products (surface reflectance and surface temperature). <a href="https://www.usgs.gov/landsat-missions/landsat-collection-2-level-2-science-products" target="_blank" rel="noopener">usgs.gov</a></li>
+        <li id="ref-12">Zanaga, D. et al. (2022). ESA WorldCover 10 m 2021 v200. <a href="https://developers.google.com/earth-engine/datasets/catalog/ESA_WorldCover_v200" target="_blank" rel="noopener">Earth Engine data catalog</a></li>
+        <li id="ref-13">Schiavina, M. et al. (2023). GHS-POP R2023A: GHS population grid multitemporal (1975–2030). European Commission, Joint Research Centre. <a href="https://developers.google.com/earth-engine/datasets/catalog/JRC_GHSL_P2023A_GHS_POP" target="_blank" rel="noopener">Earth Engine data catalog</a></li>
+        <li id="ref-14">FAO. Global Administrative Unit Layers (GAUL) 2015, level 1. <a href="https://developers.google.com/earth-engine/datasets/catalog/FAO_GAUL_2015_level1" target="_blank" rel="noopener">Earth Engine data catalog</a></li>
+        <li id="ref-15">Rouse, J.W., Haas, R.H., Schell, J.A. &amp; Deering, D.W. (1974). Monitoring vegetation systems in the Great Plains with ERTS. Third ERTS Symposium, NASA SP-351, 309–317.</li>
+        <li id="ref-16">Gorelick, N., Hancher, M., Dixon, M., Ilyushchenko, S., Thau, D. &amp; Moore, R. (2017). Google Earth Engine: Planetary-scale geospatial analysis for everyone. Remote Sensing of Environment 202, 18–27. <a href="https://doi.org/10.1016/j.rse.2017.06.031" target="_blank" rel="noopener">doi:10.1016/j.rse.2017.06.031</a></li>
+      </ol>
+
+      <h3>How to cite this work</h3>
+      <div class="citebox">
+        <p id="cite-text">Ekorshi Paul Choudhury (2026). Delhi Heat–Green Atlas: green cover, surface heat and greening priority in Delhi, pre-monsoon 2023–2025. Preliminary analysis. Interactive map: https://elite-rider-296513.projects.earthengine.app/view/delhi-heat-green-atlas</p>
+        <button class="btn ghost" type="button" id="copy-cite">Copy citation</button>
+      </div>
+      <p class="small" id="code-line">Every number on this page comes from one Earth Engine script. Code: <a href="code/analysis.js">analysis script</a> · <a href="code/map_app.js">map app</a>. Paste either into the <a href="https://code.earthengine.google.com" target="_blank" rel="noopener">Earth Engine Code Editor</a> and click Run.</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <span>Delhi Heat–Green Atlas · Ekorshi Paul Choudhury · 2026</span>
+    <span>Preliminary exploratory analysis. Not peer reviewed.</span>
+  </div>
+</footer>
+
+<script>
+/* =====================================================================
+   DATA — every value below is copied from the Earth Engine Console output.
+   ===================================================================== */
+const DATA = {
+  years: [
+    { year: 2023, scenes: 10, samples: 2494, r: -0.61,  slope: -0.939, trees: 40.071, grass: 43.394, built: 42.761 },
+    { year: 2024, scenes: 16, samples: 2494, r: -0.52,  slope: -1.088, trees: 44.313, grass: 48.414, built: 46.173 },
+    { year: 2025, scenes: 13, samples: 2494, r: -0.555, slope: -0.86,  trees: 39.577, grass: 42.617, built: 41.583 }
+  ],
+  paired: [
+    { year: 2023, squares: 764, gt: 1.414, bt: 1.220, gb: 0.221, pctTreesCoolest: 89.136, pctGrassHotter: 60.34 },
+    { year: 2024, squares: 764, gt: 1.601, bt: 0.872, gb: 0.850, pctTreesCoolest: 76.963, pctGrassHotter: 75.131 },
+    { year: 2025, squares: 764, gt: 1.274, bt: 1.048, gb: 0.216, pctTreesCoolest: 86.126, pctGrassHotter: 63.351 }
+  ],
+  opportunity: { builtMean: 41.583, hotGrassHa: 3752.075, nearHotspotHa: 709.302 },
+  clusters: [
+    { name: "Uttam Nagar – Bindapur",   region: "west",       ha: 973.023, lat: 28.625, lon: 77.052, oppHa: 18.004 },
+    { name: "Sangam Vihar",             region: "south",      ha: 359.508, lat: 28.501, lon: 77.240, oppHa: 6.294 },
+    { name: "Nangloi",                  region: "west",       ha: 274.879, lat: 28.673, lon: 77.062, oppHa: 5.212 },
+    { name: "Karawal Nagar",            region: "north-east", ha: 255.501, lat: 28.722, lon: 77.272, oppHa: 2.123 },
+    { name: "Old Delhi / Chandni Chowk",region: "central",    ha: 248.672, lat: 28.650, lon: 77.229, oppHa: 4.092 },
+    { name: "Sultanpuri – Mangolpuri",  region: "north-west", ha: 182.040, lat: 28.699, lon: 77.056, oppHa: 6.374 },
+    { name: "Jahangirpuri",             region: "north",      ha: 140.878, lat: 28.720, lon: 77.169, oppHa: 10.673 },
+    { name: "Bhalswa",                  region: "north",      ha: 124.219, lat: 28.748, lon: 77.160, oppHa: 16.947 },
+    { name: "Khyala – Vishnu Garden",   region: "west",       ha: 115.577, lat: 28.652, lon: 77.100, oppHa: 1.023 },
+    { name: "Mustafabad – Gokulpuri",   region: "north-east", ha: 115.520, lat: 28.704, lon: 77.261, oppHa: 16.004 }
+  ],
+  appUrl: "https://elite-rider-296513.projects.earthengine.app/view/delhi-heat-green-atlas",
+  codeUrl: null
+};
+
+const FIGS = [
+  { key: "lst",  label: "Surface temperature", src: "fig1_lst_2025.jpg",
+    cap: "Fig. 1 · Land surface temperature, pre-monsoon 2025 (median of 13 clear Landsat scenes). Cropland, bare land and water are excluded, so the basemap shows through there.",
+    legend: { grad: ["#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c"], lo: "35 °C", hi: "50 °C" } },
+  { key: "ndvi", label: "Vegetation", src: "fig2_ndvi_2025.jpg",
+    cap: "Fig. 2 · Vegetation (NDVI), pre-monsoon 2025. Darker green is denser vegetation; the Ridge and the central and southern green belt stand out.",
+    legend: { grad: ["#e8dcc0", "#a6d96a", "#1a9641", "#00441b"], lo: "NDVI 0", hi: "0.6" } },
+  { key: "pri",  label: "Greening priority", src: "fig3_priority_2025.jpg",
+    cap: "Fig. 3 · Greening priority on built-up land, 2025. Darker orange combines more heat, less vegetation and more people.",
+    legend: { grad: ["#fff7bc", "#fec44f", "#d95f0e", "#7f2704"], lo: "Lower", hi: "Higher" } },
+  { key: "hot",  label: "Top 10 % hotspots", src: "fig4_hotspots_2025.jpg",
+    cap: "Fig. 4 · Built-up land in the top 10 % of the greening-priority score (0.80 or higher).",
+    legend: { swatch: "#e7298a", text: "Priority hotspot" } },
+  { key: "sc",   label: "Scatter plot", src: "fig5_scatter_2025.png",
+    cap: "Fig. 5 · NDVI against surface temperature for about 2,500 sampled pixels, 2025, with linear trend (r = −0.555).",
+    legend: null }
+];
+
+const IUCN = [
+  ["1 · Societal challenge", "ok", "Quantifies heat exposure by land type and locates where dense populations face the most heat."],
+  ["2 · Design at scale", "ok", "Tests cooling at neighbourhood (1 km) scale and sizes candidate land around each priority cluster."],
+  ["3 · Biodiversity net gain", "none", "Biodiversity outcomes are not assessed. Native, drought-tolerant species would be needed."],
+  ["4 · Economic viability", "none", "Costs of planting and upkeep, and their comparison with alternatives such as cool roofs, are not assessed."],
+  ["5 · Inclusive governance", "none", "Residents and local bodies have not been consulted; the priority map is a starting point for that conversation."],
+  ["6 · Balancing trade-offs", "part", "Puts population in the priority score and identifies water demand and competition for land, but does not quantify them."],
+  ["7 · Adaptive management", "ok", "A repeatable seasonal script and live map make it possible to monitor whether greening cools."],
+  ["8 · Mainstreaming", "none", "Not yet linked to Delhi's heat or greening plans."]
+];
+const CHIP = { ok: "Addressed", part: "Partly", none: "Not assessed" };
+
+const CLASSES = [
+  { key: "trees", label: "Tree cover", short: "Trees",    color: "var(--c-trees)", shape: "circle" },
+  { key: "grass", label: "Grassland",  short: "Grass",    color: "var(--c-grass)", shape: "diamond" },
+  { key: "built", label: "Built-up",   short: "Built-up", color: "var(--c-built)", shape: "square" }
+];
+const MONO = "JetBrains Mono, ui-monospace, monospace";
+const minus = s => String(s).replace(/^-/, "−");
+const fx = (v, d) => minus(v.toFixed(d));
+const nf = v => Math.round(v).toLocaleString("en-IN");
+const state = { year: 2025, metric: "ha", fig: 0 };
+const Y = () => DATA.years.find(y => y.year === state.year);
+const P = () => DATA.paired.find(y => y.year === state.year);
+
+function markSVG(shape, s, color) {
+  const h = s / 2;
+  if (shape === "circle") return `<circle cx="${h}" cy="${h}" r="${h - 1}" fill="${color}"/>`;
+  if (shape === "diamond") return `<path d="M${h} 1 L${s - 1} ${h} L${h} ${s - 1} L1 ${h} Z" fill="${color}"/>`;
+  return `<rect x="1.5" y="1.5" width="${s - 3}" height="${s - 3}" rx="1.5" fill="${color}"/>`;
+}
+
+function attachTips(box) {
+  let tip = box.querySelector(".tip");
+  if (!tip) { tip = document.createElement("div"); tip.className = "tip"; tip.hidden = true; box.appendChild(tip); }
+  box.querySelectorAll("[data-tip]").forEach(el => {
+    const show = () => {
+      const r = el.getBoundingClientRect(), b = box.getBoundingClientRect();
+      tip.textContent = el.dataset.tip;
+      tip.style.left = (r.left - b.left + r.width / 2 + box.scrollLeft) + "px";
+      tip.style.top = (r.top - b.top + 6) + "px";
+      tip.hidden = false;
+    };
+    el.addEventListener("pointerenter", show);
+    el.addEventListener("focus", show);
+    el.addEventListener("pointerleave", () => tip.hidden = true);
+    el.addEventListener("blur", () => tip.hidden = true);
+  });
+}
+
+/* ---------- year controls ---------- */
+document.querySelectorAll(".yearctl").forEach(ctl => {
+  ctl.innerHTML = DATA.years.map(y => `<button type="button" data-y="${y.year}">${y.year}</button>`).join("");
+  ctl.addEventListener("click", e => {
+    const b = e.target.closest("button[data-y]");
+    if (!b) return;
+    state.year = +b.dataset.y;
+    renderYear();
+  });
+});
+
+/* ---------- ribbon ---------- */
+const SCALE = { min: 35, max: 50 };
+const ticks = document.getElementById("ticks");
+for (let t = SCALE.min; t <= SCALE.max; t += 5) {
+  const el = document.createElement("span");
+  el.className = "tick";
+  el.style.left = ((t - SCALE.min) / (SCALE.max - SCALE.min) * 100) + "%";
+  el.textContent = t + "°";
+  ticks.appendChild(el);
+}
+const track = document.getElementById("ribbon-track");
+const pins = CLASSES.map(c => {
+  const p = document.createElement("div");
+  p.className = "pin";
+  p.innerHTML = `<span></span><i></i>`;
+  track.appendChild(p);
+  return { c, el: p };
+});
+function renderRibbon() {
+  const y = Y();
+  pins.forEach(({ c, el }) => {
+    const v = y[c.key];
+    el.style.left = Math.min(100, Math.max(0, (v - SCALE.min) / (SCALE.max - SCALE.min) * 100)) + "%";
+    el.querySelector("span").textContent = `${c.short} ${v.toFixed(1)}°`;
+  });
+  [...pins].sort((a, b) => Y()[a.c.key] - Y()[b.c.key]).forEach(({ el }, i) => {
+    el.style.top = (-26 * i) + "px";
+    el.querySelector("i").style.height = (16 + 26 * i) + "px";
+  });
+}
+
+/* ---------- tiles ---------- */
+function renderTiles() {
+  const p = P(), y = Y();
+  const items = [
+    { v: fx(p.pctTreesCoolest, 0) + "%", l: `of ${p.squares} one-km squares where tree cover was the coolest land, ${p.year}` },
+    { v: "+" + fx(p.gt, 1) + "°", l: `open grassland vs tree cover in the same square (median °C), ${p.year}` },
+    { v: "+" + fx(p.bt, 1) + "°", l: `built-up land vs tree cover in the same square (median °C), ${p.year}` },
+    { v: fx(y.r, 3), l: `correlation between greenness and surface temperature (r), ${y.year}` }
+  ];
+  document.getElementById("tiles").innerHTML = items.map(it =>
+    `<div class="tile"><div class="v">${it.v}</div><div class="l">${it.l}</div></div>`).join("");
+}
+
+/* ---------- Q1 explorer + table ---------- */
+const slopes = DATA.years.map(y => y.slope);
+const range = document.getElementById("dndvi");
+function renderExplorer() {
+  const d = +range.value;
+  document.getElementById("dndvi-v").textContent = d.toFixed(2);
+  const vals = slopes.map(s => Math.abs(s) * d / 0.1);
+  const lo = Math.min(...vals), hi = Math.max(...vals);
+  document.getElementById("dndvi-out").textContent = `${lo.toFixed(1)}–${hi.toFixed(1)} °C`;
+}
+range.addEventListener("input", renderExplorer);
+function renderQ1Table() {
+  document.querySelector("#q1-table tbody").innerHTML = DATA.years.map(y =>
+    `<tr class="${y.year === state.year ? "sel" : ""}"><td class="mono">${y.year}</td><td class="num">${y.scenes}</td><td class="num">${y.samples.toLocaleString("en-IN")}</td><td class="num">${fx(y.r, 3)}</td><td class="num">${fx(y.slope, 2)}</td></tr>`).join("");
+}
+
+/* ---------- Q2 dot chart (city-wide) ---------- */
+document.getElementById("legend").innerHTML = CLASSES.map(c =>
+  `<span><svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true">${markSVG(c.shape, 12, c.color)}</svg>${c.label}</span>`).join("");
+function renderDot() {
+  const box = document.getElementById("dot-chart");
+  const rows = DATA.years;
+  const lo = 39, hi = 49;
+  const W = 720, L = 70, R = 24, T = 14, rowH = 52, H = T + rows.length * rowH + 34;
+  const x = v => L + (v - lo) / (hi - lo) * (W - L - R);
+  let s = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Mean land surface temperature by land cover and season">`;
+  for (let t = lo; t <= hi; t += 1) {
+    s += `<line x1="${x(t)}" x2="${x(t)}" y1="${T}" y2="${H - 30}" stroke="var(--rule)" stroke-width="1"/>`;
+    s += `<text x="${x(t)}" y="${H - 12}" text-anchor="middle" font-family="${MONO}" font-size="12" fill="var(--muted)">${t}°</text>`;
+  }
+  rows.forEach((r, i) => {
+    const cy = T + i * rowH + rowH / 2, sel = r.year === state.year;
+    if (sel) s += `<rect x="0" y="${cy - rowH / 2 + 3}" width="${W}" height="${rowH - 6}" rx="3" fill="var(--leaf-soft)"/>`;
+    const vs = CLASSES.map(c => r[c.key]);
+    s += `<text x="${L - 14}" y="${cy + 4}" text-anchor="end" font-family="${MONO}" font-size="13" font-weight="${sel ? 600 : 400}" fill="var(--ink)">${r.year}</text>`;
+    s += `<line x1="${x(Math.min(...vs))}" x2="${x(Math.max(...vs))}" y1="${cy}" y2="${cy}" stroke="var(--muted)" stroke-width="2" stroke-linecap="round"/>`;
+    CLASSES.forEach(c => {
+      const sz = 14, cx = x(r[c.key]);
+      s += `<g data-tip="${r.year} · ${c.label}: ${r[c.key].toFixed(1)} °C" tabindex="0" transform="translate(${cx - sz / 2} ${cy - sz / 2})">` +
+           `<rect x="-8" y="-8" width="${sz + 16}" height="${sz + 16}" fill="transparent"/>` +
+           `<g stroke="var(--sheet)" stroke-width="2">${markSVG(c.shape, sz, c.color)}</g></g>`;
+    });
+  });
+  box.innerHTML = s + `</svg>`;
+  attachTips(box);
+}
+
+/* ---------- Q2 paired chart ---------- */
+function renderPair() {
+  const box = document.getElementById("pair-chart");
+  const rows = [
+    { key: "gt", label: "Grassland vs trees" },
+    { key: "bt", label: "Built-up vs trees" },
+    { key: "gb", label: "Grassland vs built-up" }
+  ];
+  const lo = 0, hi = 2;
+  const W = 720, L = 170, R = 70, T = 14, rowH = 50, H = T + rows.length * rowH + 34;
+  const x = v => L + (v - lo) / (hi - lo) * (W - L - R);
+  let s = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Median within-square temperature differences by season">`;
+  for (let t = 0; t <= 2.001; t += 0.5) {
+    s += `<line x1="${x(t)}" x2="${x(t)}" y1="${T}" y2="${H - 30}" stroke="${t === 0 ? "var(--muted)" : "var(--rule)"}" stroke-width="1"/>`;
+    s += `<text x="${x(t)}" y="${H - 12}" text-anchor="middle" font-family="${MONO}" font-size="12" fill="var(--muted)">+${t.toFixed(1)}°</text>`;
+  }
+  rows.forEach((row, i) => {
+    const cy = T + i * rowH + rowH / 2;
+    const vals = DATA.paired.map(p => p[row.key]);
+    s += `<text x="${L - 16}" y="${cy + 4}" text-anchor="end" font-family="Public Sans, system-ui, sans-serif" font-size="13" fill="var(--ink)">${row.label}</text>`;
+    s += `<line x1="${x(Math.min(...vals))}" x2="${x(Math.max(...vals))}" y1="${cy}" y2="${cy}" stroke="var(--rule)" stroke-width="6" stroke-linecap="round"/>`;
+    const ordered = [...DATA.paired].sort((a, b) => (a.year === state.year) - (b.year === state.year));
+    ordered.forEach(p => {
+      const sel = p.year === state.year, cx = x(p[row.key]);
+      s += `<g data-tip="${p.year} · ${row.label}: +${p[row.key].toFixed(2)} °C" tabindex="0">` +
+           `<rect x="${cx - 12}" y="${cy - 12}" width="24" height="24" fill="transparent"/>` +
+           (sel ? `<circle cx="${cx}" cy="${cy}" r="7" fill="var(--leaf)" stroke="var(--sheet)" stroke-width="2"/>`
+                : `<circle cx="${cx}" cy="${cy}" r="5" fill="var(--sheet)" stroke="var(--muted)" stroke-width="1.5"/>`) + `</g>`;
+      if (sel) s += `<text x="${W - R + 10}" y="${cy + 4}" font-family="${MONO}" font-size="12.5" fill="var(--ink)">+${p[row.key].toFixed(2)}°</text>`;
+    });
+  });
+  box.innerHTML = s + `</svg>`;
+  attachTips(box);
+}
+
+/* ---------- robustness table ---------- */
+function renderAllTable() {
+  document.querySelector("#all-table tbody").innerHTML = DATA.years.map(y => {
+    const p = DATA.paired.find(q => q.year === y.year);
+    return `<tr class="${y.year === state.year ? "sel" : ""}"><td class="mono">${y.year}</td>` +
+      `<td class="num">${y.trees.toFixed(1)}</td><td class="num">${y.grass.toFixed(1)}</td><td class="num">${y.built.toFixed(1)}</td>` +
+      `<td class="num">+${p.gt.toFixed(2)}</td><td class="num">+${p.bt.toFixed(2)}</td><td class="num">+${p.gb.toFixed(2)}</td><td class="num">${p.pctTreesCoolest.toFixed(0)}%</td></tr>`;
+  }).join("");
+}
+
+/* ---------- Q3 cluster bars ---------- */
+const METRICS = {
+  ha:  { get: c => c.ha, fmt: v => nf(v) + " ha", title: "Ten largest priority clusters, by size",
+         note: "Size of each top-10 % priority cluster. Names mark the cluster centre; click a name to open it in Google Maps." },
+  opp: { get: c => c.oppHa, fmt: v => v.toFixed(1) + " ha", title: "Hot open grassland within 500 m of each cluster",
+         note: "Open grassland hotter than the average built-up surface (41.6 °C, 2025) within 500 m of each cluster. Where two clusters lie close together, their areas can overlap and be counted twice." },
+  per: { get: c => c.oppHa / c.ha * 100, fmt: v => v.toFixed(1) + " ha", title: "Hot open land nearby per 100 ha of cluster",
+         note: "Hectares of nearby hot open land for every 100 ha of priority settlement. Higher means more room to plant relative to need." }
+};
+document.getElementById("clu-ctl").addEventListener("click", e => {
+  const b = e.target.closest("button[data-m]");
+  if (!b) return;
+  state.metric = b.dataset.m;
+  renderClusters();
+});
+function renderClusters() {
+  const m = METRICS[state.metric];
+  document.querySelectorAll("#clu-ctl button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.m === state.metric)));
+  document.getElementById("clu-title").textContent = m.title;
+  document.getElementById("clu-note").textContent = m.note;
+  const rows = [...DATA.clusters].sort((a, b) => m.get(b) - m.get(a));
+  const max = Math.max(...rows.map(m.get));
+  const box = document.getElementById("clu-bars");
+  box.innerHTML = rows.map(c => {
+    const v = m.get(c);
+    const tip = `${c.name}: ${nf(c.ha)} ha cluster · ${c.oppHa.toFixed(1)} ha open land nearby`;
+    return `<div class="bar-row" data-tip="${tip}">` +
+      `<div class="bar-name"><a href="https://www.google.com/maps?q=${c.lat},${c.lon}" target="_blank" rel="noopener">${c.name}</a> <span class="small">· ${c.region}</span></div>` +
+      `<div class="bar-track"><div class="bar-fill" style="width:${(v / max * 82).toFixed(2)}%"></div><span class="bar-val">${m.fmt(v)}</span></div></div>`;
+  }).join("");
+  attachTips(box.parentElement);
+}
+
+/* ---------- Q4 funnel ---------- */
+(function funnel() {
+  const o = DATA.opportunity;
+  const nearTop = DATA.clusters.reduce((a, c) => a + c.oppHa, 0);
+  const rows = [
+    { l: "All open grassland hotter than average built-up land", v: o.hotGrassHa },
+    { l: "…within 500 m of any priority hotspot", v: o.nearHotspotHa },
+    { l: "…within 500 m of the ten largest clusters", v: nearTop }
+  ];
+  document.getElementById("funnel").innerHTML = rows.map(r =>
+    `<div class="bar-row"><div class="bar-name">${r.l}</div><div class="bar-track"><div class="bar-fill" style="width:${(r.v / o.hotGrassHa * 82).toFixed(2)}%"></div><span class="bar-val">${nf(r.v)} ha · ${(r.v / o.hotGrassHa * 100).toFixed(1)}%</span></div></div>`).join("");
+})();
+
+/* ---------- atlas viewer ---------- */
+const tabs = document.getElementById("tabs");
+tabs.innerHTML = FIGS.map((f, i) => `<button type="button" role="tab" id="tab-${f.key}" aria-selected="${i === 0}" tabindex="${i === 0 ? 0 : -1}">${f.label}</button>`).join("");
+function showFig(i) {
+  state.fig = i;
+  const f = FIGS[i];
+  tabs.querySelectorAll("button").forEach((b, j) => { b.setAttribute("aria-selected", String(j === i)); b.tabIndex = j === i ? 0 : -1; });
+  const img = document.getElementById("fig-img");
+  img.src = f.src; img.alt = f.cap;
+  document.getElementById("fig-cap").textContent = f.cap;
+  const lg = document.getElementById("fig-legend");
+  if (!f.legend) { lg.hidden = true; return; }
+  lg.hidden = false;
+  lg.innerHTML = f.legend.grad
+    ? `<div class="g" style="background:linear-gradient(90deg, ${f.legend.grad.join(", ")})"></div><div class="lr"><span>${f.legend.lo}</span><span>${f.legend.hi}</span></div>`
+    : `<span><span class="sw" style="background:${f.legend.swatch}"></span>${f.legend.text}</span>`;
+}
+tabs.addEventListener("click", e => {
+  const b = e.target.closest("button");
+  if (b) showFig([...tabs.children].indexOf(b));
+});
+tabs.addEventListener("keydown", e => {
+  if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return;
+  const n = (state.fig + (e.key === "ArrowRight" ? 1 : FIGS.length - 1)) % FIGS.length;
+  showFig(n); tabs.children[n].focus();
+});
+
+/* ---------- IUCN table ---------- */
+document.getElementById("iucn").innerHTML = IUCN.map(([c, s, t]) =>
+  `<tr><td style="white-space:nowrap">${c}</td><td><span class="chip ${s}">${CHIP[s]}</span></td><td>${t}</td></tr>`).join("");
+
+/* ---------- links ---------- */
+["hero-map", "app-link"].forEach(id => { document.getElementById(id).href = DATA.appUrl; });
+if (DATA.codeUrl) {
+  document.getElementById("code-line").innerHTML = `Code: <a href="${DATA.codeUrl}" target="_blank" rel="noopener">${DATA.codeUrl}</a>`;
+}
+
+/* ---------- copy citation ---------- */
+document.getElementById("copy-cite").addEventListener("click", e => {
+  const btn = e.currentTarget, text = document.getElementById("cite-text").textContent;
+  const done = () => { btn.textContent = "Copied"; setTimeout(() => btn.textContent = "Copy citation", 1800); };
+  const fallback = () => {
+    const r = document.createRange(); r.selectNodeContents(document.getElementById("cite-text"));
+    const s = getSelection(); s.removeAllRanges(); s.addRange(r);
+    btn.textContent = "Selected: press Ctrl+C";
+  };
+  try { navigator.clipboard.writeText(text).then(done, fallback); } catch (err) { fallback(); }
+});
+
+/* ---------- section index highlight ---------- */
+const links = [...document.querySelectorAll("#toc a")];
+const secs = links.map(a => document.querySelector(a.getAttribute("href"))).filter(Boolean);
+if ("IntersectionObserver" in window) {
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(en => {
+      if (!en.isIntersecting) return;
+      links.forEach(a => a.classList.toggle("on", a.getAttribute("href") === "#" + en.target.id));
+    });
+  }, { rootMargin: "-40% 0px -55% 0px" });
+  secs.forEach(s => io.observe(s));
+}
+
+/* ---------- render ---------- */
+function renderYear() {
+  document.querySelectorAll(".yearctl button").forEach(b => b.setAttribute("aria-pressed", String(+b.dataset.y === state.year)));
+  renderRibbon(); renderTiles(); renderQ1Table(); renderDot(); renderPair(); renderAllTable();
+}
+renderYear();
+renderExplorer();
+renderClusters();
+showFig(0);
+</script>
+
+</body>
+</html>
