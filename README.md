@@ -4,7 +4,7 @@
 
 A satellite study of green cover, land surface temperature and greening priority in Delhi, using Landsat 8/9 imagery from three pre-monsoon seasons (15 April – 15 June, 2023–2025) in Google Earth Engine.
 
-- **Website:** see the GitHub Pages link in the repository description
+- **Website:** (https://anonnuserr.github.io/delhi-heat-green-atlas/)
 - **Interactive map:** https://elite-rider-296513.projects.earthengine.app/view/delhi-heat-green-atlas
 
 ## Key findings
